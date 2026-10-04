@@ -1,0 +1,486 @@
+/* ============================================================================
+   TEMPLATE 04 - NORTHBOUND
+   Design read: Arctic expedition operator. Cold ink canvas, glacier cyan
+   accent, condensed all-caps display set over landscape photography, pill
+   controls on soft-rectangle containers.
+   VARIANCE 9 / MOTION 6 / DENSITY 4
+
+   Theme lock: dark only. One accent (glacier cyan #0e9bb8) on every section.
+   The alert tone is a functional form-error colour, not a brand colour.
+   ========================================================================= */
+
+@import 'tailwindcss';
+
+@import '@fontsource/bebas-neue';
+@import '@fontsource-variable/outfit';
+
+/* --------------------------------------------------------------------------
+   TOKENS
+   -------------------------------------------------------------------------- */
+@theme {
+  --font-display: 'Bebas Neue', system-ui, sans-serif;
+  --font-body: 'Outfit Variable', system-ui, sans-serif;
+
+  --color-canvas: #0a1418;
+  --color-surface: #0f1e25;
+  --color-surface-2: #16262e;
+  --color-ink: #eef5f7;
+  --color-body: #a7bcc4;
+  --color-mute: #77919b;
+  --color-hairline: #24424d;
+  --color-line-strong: #44707e;
+  --color-accent: #0e9bb8;
+  --color-accent-ink: #061116;
+  --color-alert: #e07a63;
+}
+
+:root {
+  --radius: 999px;
+  --radius-card: 28px;
+  --accent-line: rgba(14, 155, 184, 0.45);
+}
+
+/* One radius language, two stops. Documented: pills for interactive controls
+   (buttons, inputs, small badges) and a soft rectangle for anything holding
+   a photograph or a block of content. Full-bleed bands and edge-to-edge
+   photographic areas keep 0, because a pill radius turns a straight edge or
+   a landscape frame into a stadium curve.
+
+   These live in @layer base on purpose. An unlayered `*` rule outranks every
+   layered component class in Tailwind v4, which would silently stamp 999px
+   onto each photo inside .frame. */
+@layer base {
+  * {
+    border-radius: var(--radius);
+  }
+
+  .card,
+  .frame,
+  .panel {
+    border-radius: var(--radius-card);
+  }
+
+  header,
+  footer,
+  .edge,
+  .bleed,
+  .hero-media {
+    border-radius: 0;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+section[id] {
+  scroll-margin-top: 92px;
+}
+
+/* --------------------------------------------------------------------------
+   COMPONENTS
+   -------------------------------------------------------------------------- */
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 1400px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .shell {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Bebas Neue is all caps and very condensed, so display tracking goes
+     slightly positive and leading stays tight. Never set at body size. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.012em;
+    line-height: 0.9;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  .display-xl {
+    font-size: clamp(2.5rem, 12.4vw, 10.5rem);
+  }
+
+  .display-lg {
+    font-size: clamp(2rem, 6.4vw, 4.25rem);
+  }
+
+  .display-md {
+    font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+    line-height: 0.94;
+  }
+
+  .display-sm {
+    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+    line-height: 0.96;
+  }
+
+  .lede {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    max-width: 62ch;
+    color: var(--color-body);
+  }
+
+  .lede-on-photo {
+    color: rgba(238, 245, 247, 0.8);
+  }
+
+  /* Small tracked line above a section headline. Two on this page only: the
+     hero and the departures list. */
+  .micro {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .micro-on-photo {
+    color: rgba(238, 245, 247, 0.74);
+  }
+
+  /* Uppercase label for data inside a section. Not a section eyebrow. */
+  .meta {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    padding: 0.875rem 1.875rem;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease,
+      transform 120ms ease, border-color 160ms ease;
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn:disabled {
+    cursor: progress;
+    opacity: 0.65;
+  }
+
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--color-ink);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink);
+    border-color: rgba(238, 245, 247, 0.32);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--color-ink);
+  }
+
+  .nav-link {
+    position: relative;
+    transition: color 160ms ease;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 1px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nav-link:hover {
+    color: var(--color-ink);
+  }
+
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* CSS-drawn chevrons, no icon library and no hand-rolled svg paths. */
+  .chev {
+    width: 9px;
+    height: 9px;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+  }
+
+  .chev-prev {
+    transform: rotate(-135deg);
+  }
+
+  .chev-next {
+    transform: rotate(45deg);
+  }
+
+  .frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .frame img {
+    border-radius: inherit;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    transition: border-color 240ms ease, background-color 240ms ease;
+  }
+
+  .card:hover {
+    background: var(--color-surface-2);
+    border-color: var(--accent-line);
+  }
+
+  .card:hover .frame img,
+  .trip:hover .frame img,
+  .rail-card:hover .frame img {
+    transform: scale(1.055);
+  }
+
+  .rail-card h3 {
+    transition: color 200ms ease;
+  }
+
+  .rail-card:hover h3 {
+    color: var(--color-accent);
+  }
+
+  /* Horizontal scroll-snap rail. Manual scrolling only, no auto scroll. */
+  .rail {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+    padding-block: 0.25rem 0.75rem;
+  }
+
+  .rail::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .rail::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+  }
+
+  .rail::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .rail > * {
+    scroll-snap-align: start;
+  }
+
+  .rail-pad {
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .rail-pad {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .rail-pad {
+      padding-left: calc((100vw - 1400px) / 2 + 2.5rem);
+    }
+  }
+
+  .field {
+    width: 100%;
+    border: 1px solid var(--color-line-strong);
+    background: var(--color-canvas);
+    padding: 0.875rem 1.125rem;
+    font-size: 0.9375rem;
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    transition: border-color 180ms ease;
+  }
+
+  .field:hover {
+    border-color: var(--color-accent);
+  }
+
+  .field:focus {
+    border-color: var(--color-accent);
+    outline: none;
+  }
+
+  .field::placeholder {
+    color: var(--color-mute);
+  }
+
+  .field-error {
+    border-color: var(--color-alert);
+  }
+
+  select.field {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-mute) 50%),
+      linear-gradient(135deg, var(--color-mute) 50%, transparent 50%);
+    background-position: calc(100% - 20px) calc(50% + 2px), calc(100% - 14px) calc(50% + 2px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 2.75rem;
+  }
+
+  /* Disclosure for the itinerary rows. Height animates without a
+     scroll listener; when motion is reduced it snaps open. */
+  .collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 320ms ease;
+  }
+
+  .collapse > * {
+    overflow: hidden;
+  }
+
+  .collapse.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 620ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero-in {
+    animation: heroRise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--color-surface) 0%,
+      var(--color-surface-2) 50%,
+      var(--color-surface) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonSlide 1100ms linear infinite;
+  }
+}
+
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes skeletonSlide {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .hero-in {
+    animation: none;
+  }
+
+  .skeleton {
+    animation: none;
+  }
+
+  .frame img,
+  .card,
+  .btn,
+  .collapse,
+  .nav-link::after {
+    transition: none;
+  }
+}
+
+@source "./**/*.{tsx,ts}";
